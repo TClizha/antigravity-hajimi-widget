@@ -1,0 +1,24 @@
+{
+  "name": "antigravity-hajimi-widget",
+  "version": "2.3.0",
+  "description": "Antigravity 哈基米页面内原生伴生挂件与额度实时监控",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node lib/server.mjs",
+    "inject": "node lib/injector.mjs",
+    "cli": "node lib/cli.mjs",
+    "install-plugin": "node install.mjs"
+  },
+  "keywords": [
+    "antigravity",
+    "quota",
+    "pet",
+    "widget",
+    "gemini"
+  ],
+  "author": "Antigravity Hajimi Widget Contributors",
+  "license": "MIT"
+}

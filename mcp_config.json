@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "hajimi-quota": {
+      "command": "node",
+      "args": [
+        "./lib/mcp-server.mjs"
+      ]
+    }
+  }
+}
