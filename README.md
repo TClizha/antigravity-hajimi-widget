@@ -1,7 +1,8 @@
 # 🐾 Antigravity 哈基米挂件与额度监控系统 (V2.3)
 
 > **Antigravity Hajimi Companion & Quota Monitor**  
-> 专为 **Google Antigravity** 打造的原生页面内伴生挂件、实时模型配额监控与智能 Token 记账系统。
+> 专为 **Google Antigravity** 打造的原生页面内伴生挂件、实时模型配额监控与智能 Token 记账系统。  
+> 交互与视觉体验致敬 DeepSeek Harness 小鲸鱼余额挂件（[`MeteorNOX/DeepSeek-Balance-Whale-Widget`](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget)）。
 
 [![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](package.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -13,7 +14,7 @@
 ## ✨ 核心特性
 
 - 🐾 **原生哈基米伴生形象**：
-  - 内置 Google Gemini 专属角色「哈基米」（`assets/gemini.png`），支持 Q 弹物理按压、果冻回弹与抚摸音画互动。
+  - 内置 Google Gemini 衍生同人形象「哈基米」（`assets/gemini.png`），支持 Q 弹物理按压、果冻回弹与抚摸音画互动。
   - 在 Antigravity 主界面内自由拖拽漫游，松手自动边缘磁性吸附，靠近左侧边缘自动平滑水平镜像翻转。
 - 📊 **智能合并与多维度额度监控**：
   - **三合一紧凑卡片**：智能条件合并 Gemini (Flash)、Claude & GPT、Gemini 4 Argon 配额池，确定性固定排序，清晰直观。
@@ -37,34 +38,43 @@
 ## 🛠️ 环境要求
 
 - **操作系统**：Windows 10 / 11（已针对 Windows 原生优化）
-- **运行时**：Node.js `>= 20.0.0`
+- **运行时**：Node.js `>= 20.0.0`（含 `npm` / `npx`）与 `git`
 - **宿主程序**：Google Antigravity 最新版
 
 ---
 
-## 📦 安装与启用指南
+## 📦 极简安装指南（三选一）
 
-### 1. 克隆仓库
-```bash
+> 💡 **为什么在 Antigravity 内置插件商店（Marketplace）搜不到？**  
+> Antigravity 界面内置的 Marketplace 目前仅收录 Google 官方托管目录插件，暂未开放第三方 GitHub 仓库自动索引。因此推荐使用下方**一句话让 AI 帮你装**或**单行命令一键安装**，安装完成后即可在 Antigravity 的 **Plugins（已安装插件）** 界面看到带哈基米图标的插件卡片并自由开关！
+
+### 🌟 方式一：直接让 Antigravity AI 帮你安装（最推荐 · 零手动敲命令）
+
+直接打开 Antigravity 聊天框，复制发送下面这句话给 AI（过程中若弹出终端执行授权点确认即可）：
+
+> **“帮我从 `https://github.com/TClizha/antigravity-hajimi-widget` 下载并运行 `node install.mjs` 安装哈基米挂件插件，装好后调用 `node lib/cli.mjs inject` 把挂件召唤出来”**
+
+---
+
+### ⚡ 方式二：终端一行命令极速安装（`npx` 免手动克隆）
+
+在任意终端（PowerShell / CMD）中直接运行这一行命令，即可全自动从 GitHub 拉取并安装到 `~/.gemini/config/plugins/antigravity-hajimi-widget/`：
+
+```powershell
+npx -y github:TClizha/antigravity-hajimi-widget
+```
+
+---
+
+### 🔧 方式三：传统克隆安装（适合二次开发与定制）
+
+```powershell
 git clone https://github.com/TClizha/antigravity-hajimi-widget.git
 cd antigravity-hajimi-widget
-```
-
-### 2. 一键安装并注册插件
-在项目根目录下执行安装脚本：
-```bash
 node install.mjs
-# 或通过 npm
-npm run install-plugin
 ```
 
-安装脚本将自动完成：
-1. 将插件核心文件复制到全局插件目录 `~/.gemini/config/plugins/antigravity-hajimi-widget/`；
-2. 动态生成与当前用户环境匹配的 `plugin.json`、`mcp_config.json` 与 `hooks.json`；
-3. 在 `~/.gemini/config/config.json` 中自动登记并启用插件。
-
-### 3. 重启 Antigravity
-重启 Antigravity，即可在编辑器右下角看到可爱的哈基米挂件伴生就绪！
+> 🎉 **生效说明**：安装脚本会自动将插件注册到 `~/.gemini/config/config.json`。**重启 Antigravity** 后挂件即会随会话自动伴生加载；若不想重启，直接运行 `node ~/.gemini/config/plugins/antigravity-hajimi-widget/lib/cli.mjs inject` 即可秒级热挂载到当前窗口！
 
 ---
 
@@ -102,29 +112,42 @@ node lib/cli.mjs stop
 ## 📂 项目文件架构
 
 ```text
-├── assets/                 # 音效 (D1.mp3, Ya1.mp3 等) 与哈基米立绘 (gemini.png)
+├── assets/                    # 音效 (D1.mp3, Ya1.mp3 等) 与哈基米立绘 (gemini.png)
+├── docs/                      # 系统架构设计与代码审查白皮书
 ├── lib/
-│   ├── quota-probe.mjs     # 语言服务器 RPC 配额探针引擎 (智能合并去重与固定排序)
-│   ├── usage-stats.mjs     # 本地交互 Token 记账与活跃提问/授权请求检测器
-│   ├── server.mjs          # 本地伴生 HTTP 服务与配置持久化接口 (39325)
-│   ├── widget.js           # 页面内挂件核心逻辑 (Q弹物理、气泡、面板、Web Audio 音效)
-│   ├── injector.mjs        # Chrome DevTools Protocol 动态 WebSocket 挂载守护器
-│   ├── mcp-server.mjs      # Antigravity 标准 MCP 服务入口与生命周期管理
+│   ├── quota-probe.mjs        # 语言服务器 RPC 配额探针引擎 (智能合并去重与固定排序)
+│   ├── usage-stats.mjs        # 本地交互 Token 记账与活跃提问/授权请求检测器
+│   ├── server.mjs             # 本地伴生 HTTP 服务与配置持久化接口 (39325)
+│   ├── widget.js              # 页面内挂件核心逻辑 (Q弹物理、气泡、面板、Web Audio 音效)
+│   ├── injector.mjs           # Chrome DevTools Protocol 动态 WebSocket 挂载守护器
+│   ├── mcp-server.mjs         # Antigravity 标准 MCP 服务入口与生命周期管理
 │   ├── hook-session-start.cjs # 会话伴生自动拉起 Hook
-│   └── cli.mjs             # 命令行工具
+│   └── cli.mjs                # 命令行工具
 ├── skills/
-│   └── hajimi-quota/       # Antigravity 内置技能定义
-├── hooks.json              # 钩子配置模板
-├── mcp_config.json         # MCP 服务配置模板
-├── install.mjs             # 一键原子安装脚本
+│   └── hajimi-quota/          # Antigravity 内置技能定义
+├── hooks.json                 # 钩子配置模板
+├── mcp_config.json            # MCP 服务配置模板
+├── plugin.json                # Antigravity 插件元数据清单 (含图标与推荐提示词)
+├── install.mjs                # 一键原子安装脚本 (支持 npx 直接调用)
 ├── package.json
-└── LICENSE                 # MIT 开源许可证
+├── PROVENANCE.md              # 美术与音效素材来源及许可范围声明
+└── LICENSE                    # MIT 开源许可证
 ```
 
 ---
 
-## 📜 鸣谢与致敬
+## 📜 鸣谢与致敬 (Credits)
 
-- 交互与视觉灵感源自 DeepSeek Harness 大肥鱼挂件（`dsh-whale-widget`）与 [pigeon189/zcode-fox-widget](https://github.com/pigeon189/zcode-fox-widget)。
-- 感谢 Google Antigravity 团队提供的卓越智能编程体验。
-- 本项目遵循 [MIT 许可证](LICENSE) 开源。
+本项目的交互设计、气泡几何排版与音效反馈深深致敬以下优秀的开源前辈项目：
+
+- 🐋 **[MeteorNOX/DeepSeek-Balance-Whale-Widget (`dsh-whale-widget`)](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget)**：DeepSeek Harness (DSH) 经典小鲸鱼余额挂件（原作者 [@MeteorNOX](https://github.com/MeteorNOX) 及全体贡献者），提供了页面内伴生挂件的核心交互范式、思考气泡几何与经典按压音效设计。
+- 🐋 **[Yang-huai406/Codex-Whale-Public](https://github.com/Yang-huai406/Codex-Whale-Public)**：小鲸鱼挂件 Codex 桌面应用独立仓库。
+- 🦊 **[pigeon189/zcode-fox-widget](https://github.com/pigeon189/zcode-fox-widget)**：ZCode 狐狸娘挂件移植项目。
+- 🚀 感谢 **Google Antigravity** 团队提供的卓越智能编程平台与插件生态支持。
+
+---
+
+## ⚖️ 开源许可证与素材声明 (License & Provenance)
+
+- **源代码与文档**：遵循 **[MIT License](LICENSE)** 开源（同时保留上游参考项目的 MIT 版权声明）。
+- **美术与音效素材（`assets/`）**：**不在 MIT 许可覆盖范围内**。`assets/` 目录下的音效文件（源自 [`DeepSeek-Balance-Whale-Widget`](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget)）与哈基米立绘图片（`gemini.png`）按「原样（as-is）」随插件分发，仅用于运行与展示本插件，不授予商业再许可。逐项来源说明与权利主张（Takedown）移除方式详见 **[`PROVENANCE.md`](PROVENANCE.md)**。

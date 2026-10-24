@@ -1,6 +1,8 @@
 MIT License
 
 Copyright (c) 2026 Antigravity Hajimi Widget Contributors
+Copyright (c) 2026 MeteorNOX (DeepSeek-Balance-Whale-Widget / dsh-whale-widget)
+Copyright (c) 2026 pigeon189 (zcode-fox-widget)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +24,12 @@ SOFTWARE.
 
 ---
 
-### Acknowledgements & Credits
-Special thanks to upstream and open-source projects for inspiration and foundation:
-- DeepSeek Harness Desktop Pet (`dsh-whale-widget`) for the delightful interactive widget experience and UI paradigms.
-- The Google Antigravity & Chrome DevTools Protocol community for zero-overhead native companion architectures.
+### Asset Notice & Provenance (素材许可范围说明)
+
+The **MIT License** above applies to the **source code, scripts, and documentation** in this repository.  
+Art and audio assets located under `assets/` (`gemini.png`, `D1.mp3`, `D2.mp3`, `Ya1.mp3`, `Ya2.mp3`) are **NOT** covered by the MIT License; they are provided "as-is" solely for running this widget plugin, and no additional redistribution or commercial sublicensing rights are granted. Please refer to [`PROVENANCE.md`](PROVENANCE.md) for detailed attribution and takedown procedures.
+
+### Acknowledgements & Upstream Credits
+- **[MeteorNOX/DeepSeek-Balance-Whale-Widget (`dsh-whale-widget`)](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget)** — Original DSH Whale Balance Widget for the interactive widget paradigm, SVG bubble geometry, and audio feedback assets.
+- **[Yang-huai406/Codex-Whale-Public](https://github.com/Yang-huai406/Codex-Whale-Public)** — Desktop adaptation of the Whale Widget.
+- **[pigeon189/zcode-fox-widget](https://github.com/pigeon189/zcode-fox-widget)** — Ported widget implementation and interaction inspiration.

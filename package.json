@@ -3,6 +3,9 @@
   "version": "2.3.0",
   "description": "Antigravity 哈基米页面内原生伴生挂件与额度实时监控",
   "type": "module",
+  "bin": {
+    "antigravity-hajimi-widget": "./install.mjs"
+  },
   "engines": {
     "node": ">=20.0.0"
   },
@@ -17,8 +20,13 @@
     "quota",
     "pet",
     "widget",
-    "gemini"
+    "gemini",
+    "hajimi"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TClizha/antigravity-hajimi-widget.git"
+  },
   "author": "Antigravity Hajimi Widget Contributors",
   "license": "MIT"
 }

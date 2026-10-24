@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // 安装脚本：将哈基米额度挂件安装到 Antigravity 插件目录 ~/.gemini/config/plugins/antigravity-hajimi-widget
 import fs from 'node:fs';
 import path from 'node:path';
@@ -5,10 +6,11 @@ import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SOURCE_DIR = __dirname;
+const SOURCE_DIR = path.resolve(__dirname);
 const PLUGIN_NAME = 'antigravity-hajimi-widget';
-const PLUGINS_BASE = path.join(os.homedir(), '.gemini', 'config', 'plugins');
-const TARGET_DIR = path.join(PLUGINS_BASE, PLUGIN_NAME);
+const PLUGINS_BASE = path.resolve(os.homedir(), '.gemini', 'config', 'plugins');
+const TARGET_DIR = path.resolve(PLUGINS_BASE, PLUGIN_NAME);
+const isSameDir = SOURCE_DIR.toLowerCase() === TARGET_DIR.toLowerCase();
 
 // 读取版本号
 let version = '2.3.0';
@@ -56,35 +58,63 @@ function syncRecursive(src, dest) {
 }
 
 // 1. 清理旧版残留并同步核心文件（纯 V2.0+ 现代页面内架构）
-const itemsToCopy = ['assets', 'lib', 'package.json', 'README.md', 'LICENSE', 'skills'];
-const allowedTopLevel = new Set([...itemsToCopy, 'plugin.json', 'mcp_config.json', 'hooks.json']);
+const itemsToCopy = ['assets', 'lib', 'package.json', 'README.md', 'LICENSE', 'PROVENANCE.md', 'skills'];
+const allowedTopLevel = new Set([
+  ...itemsToCopy,
+  'plugin.json',
+  'mcp_config.json',
+  'hooks.json',
+  'install.mjs',
+  'docs',
+  'AGENTS.md',
+  'GEMINI.md',
+  '.gitignore'
+]);
 fs.mkdirSync(TARGET_DIR, { recursive: true });
 
-for (const existingItem of fs.readdirSync(TARGET_DIR)) {
-  if (!allowedTopLevel.has(existingItem)) {
-    const staleTopPath = path.join(TARGET_DIR, existingItem);
-    try {
-      fs.rmSync(staleTopPath, { recursive: true, force: true });
-    } catch (rmErr) {
-      console.warn(`⚠️ 清理顶层旧文件失败 (${staleTopPath}):`, rmErr.message);
+if (!isSameDir) {
+  for (const existingItem of fs.readdirSync(TARGET_DIR)) {
+    if (!allowedTopLevel.has(existingItem)) {
+      const staleTopPath = path.join(TARGET_DIR, existingItem);
+      try {
+        fs.rmSync(staleTopPath, { recursive: true, force: true });
+      } catch (rmErr) {
+        console.warn(`⚠️ 清理顶层旧文件失败 (${staleTopPath}):`, rmErr.message);
+      }
     }
   }
-}
 
-for (const item of itemsToCopy) {
-  const src = path.join(SOURCE_DIR, item);
-  const dest = path.join(TARGET_DIR, item);
-  if (fs.existsSync(src)) {
-    syncRecursive(src, dest);
+  for (const item of itemsToCopy) {
+    const src = path.join(SOURCE_DIR, item);
+    const dest = path.join(TARGET_DIR, item);
+    if (fs.existsSync(src)) {
+      syncRecursive(src, dest);
+    }
   }
+} else {
+  console.log(`ℹ️ 当前已在目标插件目录内运行，跳过文件复制步骤，直接刷新配置清单...`);
 }
 
-// 2. 动态生成 plugin.json
-const pluginManifest = {
+// 2. 动态生成 plugin.json（从源 plugin.json 读取元数据并保持版本号一致）
+let pluginManifest = {
   name: PLUGIN_NAME,
-  description: 'Antigravity 哈基米页面内原生伴生挂件与额度实时监控',
-  version: version
+  displayName: 'Antigravity 哈基米挂件 (Hajimi Widget)',
+  description: 'Antigravity 哈基米页面内原生伴生挂件、实时模型配额监控与智能 Token 记账系统。',
+  version: version,
+  logo: 'assets/gemini.png',
+  suggestedPrompts: [
+    '帮我看看现在 Antigravity 各个模型的剩余配额和刷新倒计时',
+    '把哈基米挂件召唤出来',
+    '查看今天的 Token 消耗与配额状态'
+  ]
 };
+try {
+  const srcManifestPath = path.join(SOURCE_DIR, 'plugin.json');
+  if (fs.existsSync(srcManifestPath)) {
+    const srcManifest = JSON.parse(fs.readFileSync(srcManifestPath, 'utf8'));
+    pluginManifest = { ...pluginManifest, ...srcManifest, name: PLUGIN_NAME, version };
+  }
+} catch (_) {}
 fs.writeFileSync(path.join(TARGET_DIR, 'plugin.json'), JSON.stringify(pluginManifest, null, 2), 'utf8');
 
 // 3. 动态生成目标用户的 mcp_config.json
@@ -115,6 +145,7 @@ fs.writeFileSync(path.join(TARGET_DIR, 'hooks.json'), JSON.stringify(hooksConfig
 
 // 5. 注册启用插件配置到 ~/.gemini/config/config.json (安全解析与原子写入，绝不清空损坏配置)
 const configJsonPath = path.join(os.homedir(), '.gemini', 'config', 'config.json');
+let configEnabledOk = false;
 try {
   let userConfig = {};
   let canWriteConfig = true;
@@ -146,13 +177,20 @@ try {
     const tmpConfigPath = path.join(os.homedir(), '.gemini', 'config', `config.json.tmp.${Date.now()}`);
     fs.writeFileSync(tmpConfigPath, JSON.stringify(userConfig, null, 2), 'utf8');
     fs.renameSync(tmpConfigPath, configJsonPath);
+    configEnabledOk = true;
     console.log(`✅ 已在 ~/.gemini/config/config.json 中启用插件: ${PLUGIN_NAME}`);
   }
 } catch (e) {
   console.warn(`⚠️ 写入 config.json 失败:`, e.message);
 }
 
-console.log(`\n🎉 安装成功！`);
-console.log(`📍 插件目录: ${TARGET_DIR}`);
-console.log(`💡 挂件已伴随 Antigravity 会话自动加载，也可通过命令行测试:`);
-console.log(`   node "${path.join(TARGET_DIR, 'lib', 'cli.mjs')}" status`);
+if (configEnabledOk) {
+  console.log(`\n🎉 安装并启用成功！`);
+  console.log(`📍 插件目录: ${TARGET_DIR}`);
+  console.log(`💡 重启 Antigravity 后挂件即可自动加载，也可通过命令行立即唤醒或查看状态:`);
+  console.log(`   node "${path.join(TARGET_DIR, 'lib', 'cli.mjs')}" status`);
+} else {
+  console.warn(`\n⚠️ 插件文件已复制至 ${TARGET_DIR}，但未能自动写入 config.json 启用状态。`);
+  console.warn(`👉 请在 Antigravity 的 Plugins 界面手动开启 "${PLUGIN_NAME}"，或检查 ~/.gemini/config/config.json 格式。`);
+  process.exitCode = 1;
+}

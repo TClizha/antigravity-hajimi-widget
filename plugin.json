@@ -1,5 +1,12 @@
 {
   "name": "antigravity-hajimi-widget",
-  "description": "Antigravity 哈基米页面内挂件与额度实时监控",
-  "version": "2.1.0"
+  "displayName": "Antigravity 哈基米挂件 (Hajimi Widget)",
+  "description": "Antigravity 哈基米页面内原生伴生挂件、实时模型配额监控与智能 Token 记账系统。",
+  "version": "2.3.0",
+  "logo": "assets/gemini.png",
+  "suggestedPrompts": [
+    "帮我看看现在 Antigravity 各个模型的剩余配额和刷新倒计时",
+    "把哈基米挂件召唤出来",
+    "查看今天的 Token 消耗与配额状态"
+  ]
 }

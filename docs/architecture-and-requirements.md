@@ -17,7 +17,7 @@
 ## 一、 需求背景与核心目标
 
 ### 1. 业务背景与架构转型
-- **对标产品**：DeepSeek Harness (DSH) 中的「大肥鱼挂件」（[`dsh-whale-widget`](dsh-whale-widget)）。
+- **对标产品**：DeepSeek Harness (DSH) 中的「大肥鱼挂件」（[`MeteorNOX/DeepSeek-Balance-Whale-Widget` (`dsh-whale-widget`)](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget)）。
 - **用户核心痛点（V1.0 独立窗口模式的局限）**：
   1. 窗口独立漂浮在操作系统桌面，多显示器或窗口最小化时容易脱节，产生多余的任务栏图标或托盘残留；
   2. 容易被误拖出 Antigravity 软件边界；
